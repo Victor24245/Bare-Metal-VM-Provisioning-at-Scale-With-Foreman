@@ -1,0 +1,12 @@
+---
+### File managed with puppet ###
+## Module:           ''
+
+
+# Database is managed by foreman::database::postgresql
+production:
+  adapter: postgresql
+  database: foreman
+  username: foreman
+  password: "qhPQb2MMj3AapxbBKv7om6TpQXjfWsuF"
+  pool: 5

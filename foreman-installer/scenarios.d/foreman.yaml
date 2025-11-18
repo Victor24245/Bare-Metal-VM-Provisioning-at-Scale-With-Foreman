@@ -1,0 +1,31 @@
+---
+:answer_file: "/etc/foreman-installer/scenarios.d/foreman-answers.yaml"
+:color_of_background: :dark
+:colors: true
+:custom: {}
+:description: Default installation of Foreman
+:enabled: true
+:facts: {}
+:hiera_config: "/usr/share/foreman-installer/config/foreman-hiera.yaml"
+:hook_dirs: []
+:installer_dir: "/usr/share/foreman-installer"
+:log_dir: "/var/log/foreman-installer"
+:log_level: :debug
+:log_name: foreman.log
+:low_priority_modules:
+- foreman_proxy_plugin
+- foreman_compute
+- foreman_plugin
+:mapping: {}
+:module_dirs: "/usr/share/foreman-installer/modules"
+:name: Foreman
+:no_prefix: false
+:order:
+- foreman
+- foreman_proxy
+- puppet
+:parser_cache_path: "/usr/share/foreman-installer/parser_cache/foreman.yaml"
+:skip_puppet_version_check: false
+:store_dir: ''
+:verbose: true
+:verbose_log_level: notice

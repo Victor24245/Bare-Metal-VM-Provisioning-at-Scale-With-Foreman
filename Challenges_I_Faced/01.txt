@@ -1,0 +1,13 @@
+During the Foreman + KVM provisioning project I ran into several production-grade problems that taught me Foreman’s internals.
+
+First, PXE consistently failed because an old DHCP daemon was binding port 67 on the provisioning VLAN. I used ss and tcpdump to prove the conflict, disabled the legacy DHCP service, and reconfigured Foreman smart-proxy to bind to the correct interface and PXE then worked reliably.
+
+Next, my Kickstart templates didn’t render ERB variables for hostnames and network settings. I discovered the templates weren’t associated with the correct Host Group/OS mapping in Foreman. After fixing associations and cleaning ERB syntax I validated renders from the Foreman UI and re-provisioned hosts that now came up with correct hostnames, IPs and SSH keys.
+
+I also found multiple PXE boot failures caused by missing or incorrectly referenced kernel/initramfs files. The fix was to copy the correct vmlinuz/initrd files into the TFTP tree, correct pxelinux.cfg paths, and fix permissions.
+
+With image-based provisioning, cloud-init inside my QCOW2 image initially didn’t pick up metadata. I rebuilt images using virt-customize/virt-sysprep, ensured cloud-init and qemu-guest-agent were installed, and configured the datasource list so the guest could retrieve Foreman-supplied user-data on first boot.
+
+Finally, newly provisioned hosts sometimes failed to register with Foreman due to SSL validation and time skew. I added CA distribution and agent installation to the Kickstart %post, ensured NTP synchronization, and validated certificate chains... after that, hosts checked in and reported configuration/fact data as expected.
+
+Each issue forced me to dig into logs (/var/log/foreman/production.log, /var/log/foreman-proxy/proxy.log, /var/log/cloud-init.log), use live packet captures with tcpdump, and iteratively harden the provisioning flow. The end result is a robust, repeatable zero-touch provisioning pipeline that works for both PXE and image-based workflows.
